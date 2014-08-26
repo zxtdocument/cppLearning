@@ -1,1 +1,41 @@
 C++ Primer Plus (five version)
+
+Chapter 3
+  climits 定义了很多符号常量，如下：
+  CHAR_BIT  char bit number
+  CHAR_MAX  char max number
+  INT_MAX   int max number
+
+  const int MAX=32;
+  const 比define好，有明确的类型和c++作用域，同时还能描述复杂结构
+
+  宽字符
+  wchar_t a=L'P';
+  wout<<L"tall";
+
+  cin.getline()/cin.get() 每次读取一行。getline丢弃换行符;get将换行符保留在输入
+  序列里， 下次读取， 第一个将是换行符。
+
+  enum 都是整数。
+  enum spectrum {red, oragne, yellow, green, blue, violet, indigo, ultraviolet}
+  enum bits{one=1, two=2, three=9};
+  default value:0,1,2,3,.....
+  {
+    spectrum a;
+    a=red;//valid
+    a=(spectrum)7;//vaild
+    a=1;//invalid
+    a=red + yellow;//invaild
+    a=(spectrum)((int)red + (int)yellow);//vaild
+  }
+
+
+  const char * bird="wren";//const 可以访问wren，但不能更改
+
+Chapter 8
+  内联函数：用相应的函数代码替换函数调用。
+  在函数声明和定义前面都要加上inline
+
+  引用变量：变量的别名。在声明引用时就要初始化。中途不能赋值。
+  int a=1; int & b=a;
+  
