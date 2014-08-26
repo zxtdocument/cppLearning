@@ -1,5 +1,16 @@
 C++ Primer Plus (five version)
 
+数组和指针
+char a[3][10];
+当计算a[i][j]的时候，编译器会把它变为*(*(a+i)+j)
+但是， a并不是一个二级指针，a仍然是一个一级指针， 指向数组的第一个元素。数组在内存中
+是按行优先存储的。
+char**p=(char**)a;//invalid
+char (*p)[10];//声明了一个数组指针。p指向一个char[10]
+因此p=a;就是合法的。p+1指针移动10char。指针加减所移动的类型都是以指针的类型为依据。
+而char* p[10];则是定义了一个指针数组。含有十个数据， 每个都是一个char*的指针。
+
+
 Chapter 3
   climits 定义了很多符号常量，如下：
   CHAR_BIT  char bit number
@@ -32,10 +43,95 @@ Chapter 3
 
   const char * bird="wren";//const 可以访问wren，但不能更改
 
-Chapter 8
+  const 作用于指针， 指针指向的内容不可变， 指针本身可变。
+  const int* p=&num;
+  p=&num2;//valid
+  *p=num2;//invalid
+
+  将非const值赋给const是合法的， 反之是非法的。
+  cannot convert from "const int*" to "int*"
+  const int num1=1;
+  int num2=2;
+  //int *p=&num1;//invalid
+  const int *p=&num1;//valid
+  const int *p=&num2;//valid
+  num2=9;//valid
+  *p=2;//invalid
+  赋值是否合法，只有看左右两边的类型即可。(注：const int是可以赋值给int的，因为
+  是值传递)
+  尽量在值不变的变量前加const语句。
+
+  const变量只能在定义的时候赋值， 期间不能改。
+
+  const成员函数：
+  const Stock land=Stock("haha");
+  land.show();//error, 因为无法保证show不改变land的内容。
+  因此， 要把show声明为const成员函数， 如下：
+  void stock::show() const 
+  只要方法不改变类的内容， 就应声明为const
+
+
+Chapter 8 函数
   内联函数：用相应的函数代码替换函数调用。
   在函数声明和定义前面都要加上inline
 
   引用变量：变量的别名。在声明引用时就要初始化。中途不能赋值。
   int a=1; int & b=a;
+  
+  函数的列表参数又称为函数的特征标。 
+
+  函数模板(声明和定义前都要加template...)
+  template <class T>//或者template <typename T>
+  T void(const T & a, const T &b);
+
+  给定函数名， 有非模板函数， 模板函数和显示具体化函数以及它们的重载版本。
+  编译器在选择原型时， 非模板版本优于显示具体化和模板函数， 显示具体化函数
+  优于模板函数。
+
+  void swap(int &, int&);//非模板函数
+ 
+  template <class T>
+  T swap(T &, T &);//模板函数
+
+  template <> swap<job>(job &, job &);//显示具体化函数
+
+  例子：template.cpp
+
+
+Chapter 9 内存模型和名称空间
+  防止文件多次包含：
+  #ifndef AA
+  #define AA
+    //place include file contents here
+  #endif
+
+  对于每个非内联的函数， 文件中只能包含一个定义。 所以cpp文件不能多次包含。
+
+  名称空间
+  提供一个声明名称的区域。注意，是声明区域名称空间可以是全局的， 也可以位于另一个名称空间中， 但不能位于代码块中。
+  除了用户定义的名称空间外， 还有一个默认的全局名称空间。它对应于文件级的声明区域。 全局变量都是位于全局名称空间中。
+
+  使用名称空间的内容：
+  Jack::pail=11.1;
+  全局名称空间：
+  ::fetch
+
+  namespace Jack {
+    double fetch;
+    struct Hill {};
+  }
+  char fetch;
+  int main(){
+    using Jack::fetch; //put fetch into local namespace
+    double fetch;//Error!!! Already have a local fetch
+    cin>>fetch;//read a value into Jack::fetch
+    cin>>::fetch;//read a value into global fetch
+  }
+
+Chapter 11 使用类
+
+
+   
+
+
   
