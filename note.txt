@@ -342,8 +342,96 @@ Chapter 13 类继承
 
         template <> class SortedArray<char *>{...};//针对char*的具体化。
       4.部分具体化
-          部分限制模板到通用性。可以给类型参数之一提供
-                      
+          部分限制模板到通用性。可以给类型参数之一提供具体类型。
+          //general template
+          template <class T1, class T2>
+          class Pair{...};
+          //specialization with T2 set to int
+          template <class T1> class Pair<T1, int> {...};
+          如果有多个模板可以选择， 编译器将使用具体化程度最高的模板。
+          
+          也可以为指针提供特殊版本来部分具体化现有模板。
+          template <class T> //general version
+          class Feed{...};
+          template <class T*> //pointer partial specialization
+          class Feed{...};
+          如果提供的类型不是指针，则编译器将使用通用版本;如果提供的是指针，则编译器将使用
+          指针具体化版本。
+          Feed<char> fb1;//general
+          Feed<char *> fb2;//pointer partial specialization
 
+    成员模板
+         模板可以用作结构、类或模板类的成员。
+         例子：
+         template <typename T>
+         class beta{
+           private:
+                               
+             template <typename V>//nested template class member
+             class hold{
+               private:
+                 V val;
+               public:
+                 .....
+             };    
+             hold <T> q;
+             hold <int> n;
+
+           public:
+              template<typename U> //template method
+              U blab(U u, T,t){}
+            .....
+
+         };
+
+    将模板用作参数
+      模板可以包含本身就是模板的参数。
+      例子：
+      template <template <typename T> class Thing>//line1
+      class Crab{
+        private:
+          Thing<int> s1;
+          Thing<double> s2;
+        public:
+          Crab(){}
+          ....
+      };
+      //以上就是一个模板参数的例子。其中template <typename T> class 是模板参数的类型， Thing是模板参数
+      //在具体实例化中，会把一个模板传进去而代替Thing. 传进的模板要符合其模板参数类型的定义。
+
+      template <typename T>
+      class king{...};
+
+      int main(){
+          Crab <king> a;//king是一个符合line1处类型声明的模板。
+      }
+
+
+    模板类和友元
+       1.模板类的非模板友元
+         template <class T>
+         class A{
+             friend void fun1();//为模板所有实例化的友元。
+             friend void fun2(A &);//invalid。因为A为模板类，没有特定的具体化。要写成如下形式：
+             friend void fun2(A<T> &);
+         };
+
+       2.模板类的约束模板友元函数,即友元类型取决于实例化的类型。
+         在类定义前声明每个模板函数
+         template <typename T> void counts();  
+         template <typename T> void report(T &);
+         然后在模板类声明中：
+         template <typename TT>
+         class A{
+           ...
+             friend void fun1<TT>();
+             friend void fun2<A<TT>&>(A<TT> &);
+         };
+
+       3.模板类的非约束模板友元函数
+         
+         
+         
+                      
 
 
