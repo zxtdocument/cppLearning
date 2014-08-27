@@ -129,7 +129,67 @@ Chapter 9 内存模型和名称空间
   }
 
 Chapter 11 使用类
+  算符重载
+  class Time{
+    private:
+        int hours,minutes;
+    public:
+        Time();
+        ~Time();
+        Time operator+(Time & t） const;
+  };
+  重载限制：
+  1. 重载后的算符至少有一个是用户自己定义的类型，防止用户为标准类型重载算符。
+  2. 操作符与原来的操作句法相同。
+  3. 不能定义新的操作符号。例如不能定义operator**()为求幂运算。
+  4. 有些操作符不能重载；
 
+  友元简介：
+  友元函数/友元类/友元成员函数
+  友元函数常常用来重载二元操作符。
+  如：
+  A=B*3;//convert to A=B.operator*(3);但是没有交换性;
+  A=3*B//invalid!
+  所以就需要友元函数。友元函数不是类的成员函数， 但可以访问类的私有成员。
+  原型如下：
+  在类声明中
+  friend Time operator*(double m, const Time &t);
+  函数定义：（不要再用friend）
+  Time operator*(double m, const Time & t)
+      Time result;
+      ...
+      return result;
+  }
+  操作符左侧对象对应第一个参数， 右侧对象对应第二个参数。
+  因此， 要实现以上乘法的交换行，就要定义两个操作函数。
+
+  重载<<算符
+  第一种版本：
+   cout<<"haha";//cout是一个ostream对象。因此可以通过如下友元函数重载
+  void operator<<(ostream &os, coust Time &t){
+      os<<t.hours<<":"<<t.mins;
+  }
+  这就可以使用cout<<t;来输出Time对象。
+  但这种版本无法实现：cout<<t1<<t2;这种操作
+  第二种版本，同样是友元函数, 可以实现上述操作。
+  ostream & operator<<(ostream &os, const Time &t){
+    os<<t.hours<<":"<<t.mins;
+    return os;
+  }
+
+  类的自动转换和强制类型转换
+  接受一个参数的类的构造函数， 为将类型与该参数相同的值的转换提供了蓝图。
+  只接受一个参数的构造函数才能作为转换函数。
+  如有如下构造函数：
+  Stonewt (double lbs);
+  则：
+  Stonewt myCat;
+  myCat=19.6;
+  程序将使用如上的构造函数生成一个临时对象， 然后采用逐成员赋值的方法，将
+  临时对象赋予myCat。 
+  
+  
+  
 
    
 
