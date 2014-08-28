@@ -262,7 +262,7 @@ Chapter 13 类继承
 
   派生类中重新定义的基类方法并不是重载。而是直接覆盖基类的声明，隐藏基类的方法，不管参数特征标如何。
 
-  继承和动态内存分配：
+  继承和动态内存分配：//派生类中如何处理基类的相关函数
     主要包括显示析构函数，复制构造函数和赋值操作符。
     1. 派生类的析构函数会自动调用基类的析构函数。故其职责是对派生类构造函数执行的操作进行清理。
     2. 派生类的复制构造函数要显示调用基类的复制构造函数。
@@ -273,4 +273,77 @@ Chapter 13 类继承
            base::operator=(c);
        }
 
-  
+ Chapter 14 C++代码重用
+  包含对象成员的类
+    类的对象成员可以放在初始化列表里进行初始化。而初始化的顺序取决于在类中声明的顺序，而不是初始化列表中的顺序。
+    
+  类模板
+    例子：
+    //声明和定义类模板
+    template <class Type>//或者template <typename Type>
+    class Stack{
+        private:
+            int top;
+            .....
+        public:
+            Stack();
+            .....
+            bool isfull();
+    };
+
+    template <class Type>
+    Stack<Type>::Stack(){...}
+
+    template <class Type>
+    bool Stack<Type>::isfull(){...}
+
+    //使用类模板
+    Stack<int> test1;
+
+    数组模板范例和非类型参数
+      例子：
+      template <class T, int n>
+      class ArrayTP{
+        private:
+          T ar[n];
+        public:
+          ArrayTP(){};
+          explicit ArrayTP(const T & v);
+          virtual T & operator[](int i);
+      }; 
+
+      template <class T, int n>
+      ArrayTP<T, n>::ArrayTP(const T &v){...}
+
+      T & ArrayTP<T,n>::operator[](int i){...}
+
+      以上例子中， int n就成为非类型参数。在使用时：ArrayTP<double,10> a1;就会创建一个对象，编译器
+      会用double替换T，用10替换n。表达式参数可以是整型，枚举， 引用和指针。在实例化模板的时候，用的
+      值必须是常量表达式。
+
+    递归使用模板
+      ArrayTP<ArrayTP<int,5>,10> twodes;
+
+    使用多类型参数
+      template <class T1, class T2>
+      class Pair{
+          private:
+              T1 a;
+              T2 b;
+           ....
+      }
+
+    模板的具体化
+      1.隐式实例化：声明一个或多个对象时，指出所需类型。ArrayTP<int,100> stuff;
+      2.显式实例化：
+      3.显示具体化：模板特定类型的定义。
+        template <class T>
+        class SortedArray{...};
+
+        template <> class SortedArray<char *>{...};//针对char*的具体化。
+      4.部分具体化
+          部分限制模板到通用性。可以给类型参数之一提供
+                      
+
+
+
