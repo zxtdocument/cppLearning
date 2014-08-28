@@ -429,7 +429,31 @@ Chapter 13 类继承
          };
 
        3.模板类的非约束模板友元函数
+         例子：
+           template <typename T>
+           class MyFriend{
+             private:  
+               T item;
+             public:
+               MyFriend(const T & i):item(i){}
+               template <typename C, typename D>friend void show2(C &c, D &d);
+           };
+
+           template <typename C, typename D> void show2(C &c, D &d){
+               cout<<c.item<<","<<d.item<<endl;
+           };
+           int main(){
+             MyFriend<int> hfi1(10);
+             MyFriend<int> hfi2(20);
+             MyFriend<double> hfdb(10.3);
+             show2(hfi1,hfi2);
+             show2(hfdb,hfi2);
+             return 0;
+           }
+          
+
          
+
          
          
                       
