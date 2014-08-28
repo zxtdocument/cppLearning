@@ -73,7 +73,16 @@ Chapter 3
 
 Chapter 8 函数
   内联函数：用相应的函数代码替换函数调用。
-  在函数声明和定义前面都要加上inline
+  在函数声明和定义前面都要加上inline;
+  若在类声明中直接定义函数实体， 则此函数为内联函数。
+  class A{
+   ...
+   public:
+     inline void fun1();//显示定义内联函数
+     void fun2(){...};//隐式定义内联函数
+     void fun3();//非内联函数
+  }
+  inline void A::fun1(){}
 
   引用变量：变量的别名。在声明引用时就要初始化。中途不能赋值。
   int a=1; int & b=a;
@@ -451,11 +460,13 @@ Chapter 13 类继承
              return 0;
            }
           
-
-         
-
-         
-         
-                      
-
-
+Chapter 15 友元、异常和其他
+  友元类
+    友元类的所有方法都可以访问原始类的私有成员和保护成员。
+    class TV{
+      public:
+        friend class Remote;//声明友元类。
+        friend void Remote2::set_chan();//声明某个成员函数为TV class的友元。称为友元成员函数。
+      ....
+    };
+    class Remote{ ...  }
