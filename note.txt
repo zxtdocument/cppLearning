@@ -470,3 +470,30 @@ Chapter 15 友元、异常和其他
       ....
     };
     class Remote{ ...  }
+
+  异常
+      while(cin>>x>>y){
+      try{
+        z=hmean(x,y);
+      }
+      catch(const char * s){
+        cout<<s<<'\n';
+        cout<<"enter a new pair of numbers:"
+        continue;
+      }
+    }
+    ...
+    double hmean(double a, double b){
+      if(a==-b)
+          throw "bad argument"
+      return 2*a*b/(a+b);
+    }
+    其中，被引发的异常是字符串，也可以是其他c++类型。
+    执行throw语句类似返回语句， 它将导致程序沿调用序列后退，直到找到包含try的函数,然后匹配
+    try后面的catch处理程序。
+    通常，引发异常的函数将传递一个对象。对象可以携带信息，catch块可以根据这些信息来决定采取
+    什么措施。
+    可以使用异常规范对函数进行限定，指出它将引发哪种类型的异常。如下：
+    double hmean(double a, double b) throw(char *,double);//可以引发double或者char*异常。若
+    括号内容为空，则不会引发异常。如：double fun1(int a) throw ();
+    
