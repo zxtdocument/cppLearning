@@ -1,0 +1,55 @@
+简单说说strstream:
+基于数组的类有istrstream、ostrstream和strstream。它们分别用来创建输入、输出和输入／输出流。这些类的基类之一是strstreambuf，它定义了派生类使用的几个底层的具体属性。
+除了strstreambuf以外，istream 也是istrstream的基类。类ostrstream包括了类ostream。
+strstream也包括了类iostream。所以，所有基于数组的类和“普通”I／O类一样存取相同的成员函数。
+创建基于数组的输出流要将一个输出流和一个数组关联起来，可使用下列ostream的构造函数：
+ostrstream ostr（char ＊buf， int size， int mode＝ios：：out）；
+其中，buf是指向数组的指针，该数组接收写入流的字符。数组的长度由参数size确定。缺省时，流以输出方式打开，但也可以将几项或在一起复合为所需的方式（例如，可以包含ios：：app使输出添加在数组中已存在的信息的尾部）。mode的缺省值可以满足大多数的要求。一旦打开了一个基于数组的输出流，所有对这个流的输出就放在数组中。但是，任何输出都不能写到数组的限界之外，任何这种企图都会导致错误。
+
+
+下面是一个介绍基于数组的输出流的简单程序。
+
+#include <iostream>
+#include <strstream>
+using namespace std;
+int main()
+{
+      int arraysize=50;
+      char *pbuffer=new char[arraysize];
+      ostrstream ostr(pbuffer,arraysize,ios::out);
+      ostr<<"Hello"<<" ";
+      ostr<<99-14<<hex<<" ";
+      ostr.setf(ios::showbase);
+      ostr<<100<<ends; //使用ostrstream输出到流对象的时候,要用ends结束字符串
+      cout<<pbuffer;
+      delete[] pbuffer;
+      return 0;
+}
+
+
+使用数组作输入:
+要将输入流和数组关联起来，可使用下列istrstream的构造函数：
+istrstream istr（char*buf）；
+其中，buf是指向数组的指针，该数组作为每次向流输入的字符源。 buf所指的数组必须以空结束。空结束符从不从数组中读取。
+
+下面是一个用字符串输入的例子:
+#include <iostream>
+#include <strstream>
+using namespace std;
+int main()
+{
+    const char s[]="10 Hello 15 12.23 done";
+    istrstream ins(s);
+    int i;
+    char str[80];
+    float f;
+    //reading： 10 Hello
+    ins >>i;ins >>str;
+    cout<<i<<" "<<str<<endl;
+    // reading：f 12.23 done.
+    ins>>i;
+    ins>>f;
+    ins>>str;
+    cout<<hex<<i<<" "<<f<<" "<<str;
+    return 0;
+}
