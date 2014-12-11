@@ -1,0 +1,132 @@
+1．声明一个C++字符串 
+声明一个字符串变量很简单： 
+string Str; 
+这样我们就声明了一个字符串变量，但既然是一个类，就有构造函数和析构函数。上面的声明没有传入参数，所以就直接使用了string的默认的构造函数，这个函数所作的就是把Str初始化为一个空字符串。String类的构造函数和析构函数如下： 
+
+a) string s; //生成一个空字符串s 
+b) string s(str) //拷贝构造函数 生成str的复制品 
+c) string s(str,stridx) //将字符串str内"始于位置stridx"的部分当作字符串的初值 
+d) string s(str,stridx,strlen) //将字符串str内"始于stridx且长度顶多strlen"的部分作为字符串的初值 
+e) string s(cstr) //将C字符串作为s的初值 
+f) string s(chars,chars_len) //将C字符串前chars_len个字符作为字符串s的初值。 
+g) string s(num,c) //生成一个字符串，包含num个c字符 
+h) string s(beg,end) //以区间beg;end(不包含end)内的字符作为字符串s的初值 
+i) s.~string() //销毁所有字符，释放内存 
+都很简单，我就不解释了。 
+
+2．字符串操作函数 
+这里是C++字符串的重点，我先把各种操作函数罗列出来，不喜欢把所有函数都看完的人可以在这里找自己喜欢的函数，再到后面看他的详细解释。 
+a) =,assign() //赋以新值 
+b) swap() //交换两个字符串的内容 
+c) +=,append(),push_back() //在尾部添加字符 
+d) insert() //插入字符 
+e) erase() //删除字符 
+f) clear() //删除全部字符 
+g) replace() //替换字符 
+h) + //串联字符串 
+i) ==,!=,<,<=,>,>=,compare() //比较字符串 
+j) size(),length() //返回字符数量 
+k) max_size() //返回字符的可能最大个数 
+l) empty() //判断字符串是否为空 
+m) capacity() //返回重新分配之前的字符容量 
+n) reserve() //保留一定量内存以容纳一定数量的字符 
+o) [ ], at() //存取单一字符 
+p) >>,getline() //从stream读取某值 
+q) << //将谋值写入stream 
+r) copy() //将某值赋值为一个C_string 
+s) c_str() //将内容以C_string返回 
+t) data() //将内容以字符数组形式返回 
+u) substr() //返回某个子字符串 
+v)查找函数 
+w)begin() end() //提供类似STL的迭代器支持 
+x) rbegin() rend() //逆向迭代器 
+y) get_allocator() //返回配置器 
+
+
+
+string中c_str()、data()、copy(p,n)函数的用法
+
+标准库的string类提供了3个成员函数来从一个string得到c类型的字符数组：c_str()、data()、copy(p,n)。
+
+1. c_str()：生成一个const char*指针，指向以空字符终止的数组。
+
+注：
+
+①这个数组的数据是临时的，当有一个改变这些数据的成员函数被调用后，其中的数据就会失效。因此要么现用先转换，要么把它的数据复制到用户自己可以管理的内存中。注意。看下例：
+const char* c;
+string s="1234";
+c = s.c_str();
+cout<<c<<endl; //输出：1234
+s="abcd";
+cout<<c<<endl; //输出：abcd
+
+ 
+
+上面如果继续用c指针的话，导致的错误将是不可想象的。就如：1234变为abcd
+
+其实上面的c = s.c_str(); 不是一个好习惯。既然c指针指向的内容容易失效，我们就应该按照上面的方法，那怎么把数据复制出来呢？这就要用到strcpy等函数（推荐）。
+//const char* c; //①
+//char* c;       //②
+//char c[20];
+char* c=new char[20];
+string s="1234";
+//c = s.c_str();
+strcpy(c,s.c_str());
+cout<<c<<endl; //输出：1234
+s="abcd";
+cout<<c<<endl; //输出：1234
+
+注意：不能再像上面一样①所示了，const还怎么向里面写入值啊；也不能②所示，使用了未初始化的局部变量“c”，运行会出错的 。
+
+② c_str()返回一个客户程序可读不可改的指向字符数组的指针，不需要手动释放或删除这个指针。
+
+2. data():与c_str()类似，但是返回的数组不以空字符终止。
+
+3. copy(p,n,size_type _Off = 0)：从string类型对象中至多复制n个字符到字符指针p指向的空间中。默认从首字符开始，但是也可以指定，开始的位置（记住从0开始）。返回真正从对象中复制的字符。------用户要确保p指向的空间足够保存n个字符。
+
+
+// basic_string_copy.cpp
+// compile with: /EHsc /W3
+#include <string>
+#include <iostream>
+ 
+int main( )
+{
+    using namespace std;
+    string str1 ( "1234567890" );
+    basic_string <char>::iterator str_Iter;
+    char array1 [ 20 ] = { 0 };
+    char array2 [ 10 ] = { 0 };
+    basic_string <char>:: pointer array1Ptr = array1;
+    basic_string <char>:: value_type *array2Ptr = array2;
+ 
+    cout << "The original string str1 is: ";
+    for ( str_Iter = str1.begin( ); str_Iter != str1.end( ); str_Iter++ )
+        cout << *str_Iter;
+    cout << endl;
+ 
+    basic_string <char>:: size_type nArray1;
+    // Note: string::copy is potentially unsafe, consider
+    // using string::_Copy_s instead.
+    nArray1 = str1.copy ( array1Ptr , 12 );  // C4996
+    cout << "The number of copied characters in array1 is: "
+        << nArray1 << endl;
+    cout << "The copied characters array1 is: " << array1Ptr << endl;
+ 
+    basic_string <char>:: size_type nArray2;
+    // Note: string::copy is potentially unsafe, consider
+    // using string::_Copy_s instead.
+    nArray2 = str1.copy ( array2Ptr , 5 , 6  );  // C4996
+    cout << "The number of copied characters in array2 is: "
+        << nArray2 << endl;
+    cout << "The copied characters array2 is: " << array2Ptr << endl;
+     
+    ////注意一定要使array3有足够的空间
+    //char array3[5]={0};
+    //basic_string<char>::pointer array3Ptr=array3;
+    //basic_string<char>::size_type nArray3;
+    //nArray3 = str1.copy(array3,9); //错误！！！！
+    //cout<<"The number of copied characters in array3 is: "
+    //  <<nArray3<<endl;
+    //cout<<"The copied characters array3 is: "<<array3Ptr<<endl;
+}
